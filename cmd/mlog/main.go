@@ -37,15 +37,19 @@ func main() {
 	case "info":
 		infoCmd := flag.NewFlagSet("info", flag.ExitOnError)
 		infoCmd.Parse(subflags)
-		logFile := infoCmd.Arg(0)
-		if logFile == "" {
+		nFiles := infoCmd.NArg()
+		if nFiles <= 0 {
 			fmt.Printf("Log file name required: 'mlog info <filename>'\n")
 			os.Exit(3)
 		}
-		err := info.List(logFile)
-		if err != nil {
-			fmt.Printf("mlog info error: %v\n", err)
-			os.Exit(2)
+		for iFile := 0; iFile < nFiles; iFile++ {
+			logFile := infoCmd.Arg(iFile)
+			fmt.Printf("\n--------START LOG FILE: %s-----------\n", logFile)
+			err := info.List(logFile)
+			if err != nil {
+				fmt.Printf("mlog info error: %v\n", err)
+			}
+			fmt.Printf("\n--------END LOG FILE: %s-----------\n", logFile)
 		}
 	}
 }
